@@ -1,0 +1,33 @@
+version: '2'
+services:
+  artifactory:
+    image: docker.bintray.io/jfrog/artifactory-oss
+    ports:
+      - "8081:8081"
+    networks:
+      - artifactory
+    env_file:
+      - container.env
+    volumes:
+      - /opt/artifactory/var:/var/opt/jfrog/artifactory
+      - /opt/artifactory/opt/logs:/opt/jfrog/artifactory/logs
+  web:
+    image: sonatype/nexus3
+    ports:
+      - "8080:8081"
+      - "5000:5000"
+      - "5001:5001"
+    networks:
+      - registry
+    env_file:
+      - container.env
+      - base.env
+    volumes:
+      - "nexus-data:/nexus-data"
+networks:
+  artifactory:
+    driver: bridge
+  registry:
+    driver: bridge
+volumes:
+  nexus-data:
